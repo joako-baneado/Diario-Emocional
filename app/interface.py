@@ -1,0 +1,1 @@
+# Menú simple por consola o flujo automatizado
