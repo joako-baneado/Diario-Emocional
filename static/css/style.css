@@ -1,0 +1,236 @@
+/* Custom CSS for Emotional Diary */
+
+/* Global Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+.container-fluid {
+    background: white;
+    min-height: 100vh;
+}
+
+/* Header Styles */
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.navbar-brand i {
+    color: #ff6b6b;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px 15px 0 0 !important;
+    border: none;
+}
+
+.card-title {
+    font-weight: 600;
+}
+
+/* Button Styles */
+.btn {
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    transform: translateY(-2px);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+    border: none;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #fd7e14 0%, #dc3545 100%);
+    transform: translateY(-2px);
+}
+
+/* Form Styles */
+.form-control {
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    padding: 12px 15px;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Badge Styles */
+.badge {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    border-radius: 20px;
+}
+
+.bg-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.bg-info {
+    background: linear-gradient(135deg, #17a2b8 0%, #20c997 100%) !important;
+}
+
+.bg-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+}
+
+/* Animation Classes */
+.blink {
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+/* Loading Spinner */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Alert Styles */
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+
+.alert-light {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    color: #495057;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+    color: #0c5460;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    color: #856404;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+}
+
+/* Recording Status */
+#recordingStatus {
+    animation: pulse 2s infinite;
+}
+
+#processingStatus {
+    animation: pulse 2s infinite;
+}
+
+/* Audio Player */
+audio {
+    border-radius: 10px;
+}
+
+/* Welcome Section */
+.bg-light {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+}
+
+/* Footer */
+footer {
+    background: linear-gradient(135deg, #343a40 0%, #495057 100%) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 20px;
+    }
+    
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
+    .btn {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+    }
+}
+
+/* Emotion-specific colors */
+.emotion-joy { color: #ffc107; }
+.emotion-sadness { color: #6c757d; }
+.emotion-anger { color: #dc3545; }
+.emotion-fear { color: #6f42c1; }
+.emotion-surprise { color: #fd7e14; }
+.emotion-disgust { color: #198754; }
+.emotion-neutral { color: #0dcaf0; }
+.emotion-annoyance { color: #dc3545; }
+.emotion-anxiety { color: #6f42c1; }
+.emotion-happiness { color: #ffc107; }
+.emotion-love { color: #e83e8c; }
+.emotion-embarrassment { color: #fd7e14; }
+.emotion-disappointment { color: #6c757d; }
+
+/* Context-specific colors */
+.context-work { background: linear-gradient(135deg, #fd7e14 0%, #ffc107 100%) !important; }
+.context-relationship { background: linear-gradient(135deg, #e83e8c 0%, #fd1d92 100%) !important; }
+.context-health { background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%) !important; }
+.context-school { background: linear-gradient(135deg, #6610f2 0%, #6f42c1 100%) !important; }
+.context-financial { background: linear-gradient(135deg, #198754 0%, #20c997 100%) !important; }
+.context-personal { background: linear-gradient(135deg, #0dcaf0 0%, #0d6efd 100%) !important; }
+
+/* Intensity-specific colors */
+.intensity-high { background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%) !important; }
+.intensity-medium { background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%) !important; }
+.intensity-low { background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important; }
