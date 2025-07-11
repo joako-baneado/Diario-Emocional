@@ -117,184 +117,410 @@ class EmpatheticResponseGenerator:
             'confusion': 'neutral', 'surprise': 'neutral', 'neutral': 'neutral'
         }
 
-        # Patrones de respuesta empática para cada emoción
-        # Cada emoción tiene múltiples patrones para variety y naturalidad en las respuestas
+        # Patrones de respuesta empática mejorados para cada emoción
+        # Cada emoción tiene múltiples patrones más naturales y contextualizados
         self.empathetic_patterns = {
             'anger': [
-                "I can sense the frustration in your words. It's completely understandable to feel angry when dealing with {context}.",
-                "Your anger is valid. When facing {context}, it's natural to feel this way.",
-                "I hear how upset you are about {context}. That sounds really challenging.",
-                "It's clear this situation has really gotten to you. Feeling angry about {context} makes perfect sense.",
-                "I can feel your frustration about {context}. That must be incredibly difficult to deal with."
+                "I can really sense the frustration in your words about {context}. That level of anger is completely understandable given what you're dealing with.",
+                "Your anger comes through clearly when you talk about {context}. It's natural to feel this heated when facing such challenges.",
+                "I hear how infuriated you are by {context}. That sounds like an incredibly maddening situation to be in.",
+                "The frustration you're feeling about {context} is so valid. Anyone would be upset dealing with something like that.",
+                "I can feel how much {context} has gotten under your skin. That kind of anger shows how much this matters to you.",
+                "It's clear that {context} has really pushed you to your limit. Your anger is a completely normal response to such treatment."
             ],
             'sadness': [
-                "I'm sorry you're going through this difficult time. {context} sounds really hard to deal with.",
-                "Your sadness comes through in your words. {context} must be weighing heavily on you.",
-                "I can feel the pain in what you're sharing. {context} sounds incredibly difficult.",
-                "It takes courage to express these feelings. {context} would be hard for anyone to handle.",
-                "I hear the heaviness in your heart about {context}. That's such a painful experience."
+                "I can feel the deep sadness in your words about {context}. That kind of pain must be so heavy to carry.",
+                "The grief you're experiencing with {context} comes through so clearly. I'm sorry you're going through something this difficult.",
+                "Your sadness about {context} is palpable. It takes real strength to share something this painful.",
+                "I hear the heartbreak in what you're saying about {context}. That level of sorrow would be overwhelming for anyone.",
+                "The pain you're feeling from {context} is so evident. You're dealing with something truly heart-wrenching.",
+                "I can sense how much {context} is weighing on your heart. That depth of sadness shows how deeply you care."
             ],
             'fear': [
-                "I can understand why {context} would feel scary. Your concerns are completely valid.",
-                "Fear about {context} is a natural response. You're not alone in feeling this way.",
-                "It's okay to feel afraid when facing {context}. Your feelings are important.",
-                "I hear the worry in your words about {context}. That uncertainty can be really overwhelming.",
-                "Your fear about {context} makes complete sense. That sounds really unsettling."
+                "I can hear the real fear in your voice about {context}. Those concerns feel very legitimate and understandable.",
+                "The anxiety you're experiencing around {context} makes complete sense. That uncertainty would be frightening for anyone.",
+                "Your worry about {context} comes through so clearly. It's natural to feel scared when facing something unknown like this.",
+                "I can feel how much {context} is causing you to worry. That kind of fear shows you're really thinking about what matters.",
+                "The apprehension you have about {context} is completely valid. Anyone would feel nervous in your situation.",
+                "I understand why {context} feels so threatening. Your fear is a normal response to such uncertainty."
             ],
             'joy': [
-                "I can feel the happiness in your words! {context} sounds wonderful.",
-                "Your joy is contagious! It's beautiful to hear how {context} has affected you.",
-                "I'm so glad you're experiencing this positivity with {context}.",
-                "The excitement in your message is wonderful. {context} sounds amazing!",
-                "Your happiness about {context} really shines through. That's fantastic!"
+                "The happiness radiating from your words about {context} is absolutely infectious! I can feel your joy through every sentence.",
+                "Your excitement about {context} is so wonderful to hear. It's beautiful when life brings us these bright moments.",
+                "I love the enthusiasm in your voice when you talk about {context}. That kind of joy is truly special.",
+                "The delight you're feeling about {context} really shines through. It's amazing how happiness can transform everything.",
+                "Your pure joy regarding {context} is so heartwarming. These are the moments that make everything worthwhile.",
+                "I can practically feel you glowing when you describe {context}. That level of happiness is absolutely magical."
             ],
             'surprise': [
-                "That does sound unexpected! {context} must have caught you off guard.",
-                "I can imagine how surprising {context} must have been for you.",
-                "What an unexpected turn of events with {context}! How are you processing this?",
-                "That's quite a surprise! {context} sounds like it really changed things for you.",
-                "I can see how {context} would be completely unexpected. That's quite shocking!"
+                "What a shocking turn of events with {context}! I can only imagine how that must have caught you completely off guard.",
+                "The surprise you experienced with {context} really comes through. That must have been such an unexpected moment.",
+                "I can hear how absolutely stunned you were by {context}. Life certainly has a way of throwing us curveballs.",
+                "That revelation about {context} sounds like it completely changed your perspective. What an unexpected development!",
+                "The astonishment in your words about {context} is so clear. Sometimes life surprises us in the most unexpected ways.",
+                "I can feel how bewildered you must be by {context}. That kind of surprise can really shake up everything we thought we knew."
             ],
             'disgust': [
-                "I can understand why {context} would be off-putting. That sounds unpleasant.",
-                "Your reaction to {context} is completely understandable. That does sound disturbing.",
-                "I can see why {context} would bother you. That's a natural response.",
-                "It's clear that {context} has really affected you negatively. Your feelings are valid.",
-                "I hear how repulsed you are by {context}. That sounds really uncomfortable."
+                "I can understand why {context} would be so off-putting to you. That kind of revulsion is a completely natural response.",
+                "Your strong reaction to {context} makes perfect sense. Some things are just genuinely disturbing and wrong.",
+                "The repulsion you feel toward {context} is completely justified. That sounds truly unpleasant to deal with.",
+                "I hear how much {context} bothers you on a fundamental level. That kind of disgust shows your strong moral compass.",
+                "Your aversion to {context} is completely understandable. Some situations are just inherently repulsive.",
+                "I can feel how much {context} goes against your core values. That level of disgust shows you know what's right."
             ],
             'disappointment': [
-                "I can hear the disappointment in your words about {context}. That must be really disheartening.",
-                "It's clear that {context} didn't meet your expectations. That's such a letdown.",
-                "Your disappointment about {context} is completely understandable. That sounds frustrating.",
-                "I can feel how let down you are by {context}. That's really disappointing.",
-                "It sounds like {context} was a real disappointment for you. That's tough to handle."
+                "The disappointment in your words about {context} is so palpable. That kind of letdown cuts really deep.",
+                "I can hear how much {context} fell short of your hopes. That disappointment must sting so much.",
+                "Your sense of being let down by {context} comes through clearly. Unmet expectations can be so crushing.",
+                "The disillusionment you're feeling about {context} is completely understandable. That's such a hard pill to swallow.",
+                "I can feel how deflated you are by {context}. When our hopes are dashed, it leaves such an empty feeling.",
+                "Your disappointment about {context} is so valid. It hurts when reality doesn't match what we were hoping for."
             ],
             'embarrassment': [
-                "I can sense how uncomfortable {context} made you feel. That's really embarrassing.",
-                "Your embarrassment about {context} is completely natural. We've all been there.",
-                "I understand why {context} would make you feel self-conscious. That's tough.",
-                "It's clear that {context} was mortifying for you. That's such an awkward situation.",
-                "I can feel how embarrassed you are about {context}. That sounds really uncomfortable."
+                "I can sense how mortified you feel about {context}. That kind of embarrassment is so uncomfortable and overwhelming.",
+                "The self-consciousness you're experiencing from {context} is completely understandable. We've all been in those cringe-worthy moments.",
+                "Your embarrassment about {context} comes through so clearly. Those moments when we feel exposed are truly awful.",
+                "I hear how much {context} made you want to disappear. That level of embarrassment is genuinely painful.",
+                "The shame you're feeling about {context} is so relatable. Sometimes we just want the ground to swallow us up.",
+                "I can feel how much {context} is making you second-guess yourself. Embarrassment has a way of making everything feel magnified."
             ],
             'neutral': [
-                "Thank you for sharing your thoughts about {context}. I'm here to listen.",
-                "I appreciate you taking the time to express how you feel about {context}.",
-                "Your perspective on {context} is valuable. How can I best support you?",
-                "I'm glad you felt comfortable sharing your experience with {context}.",
-                "I hear what you're saying about {context}. That's an important point."
+                "Thank you for sharing your thoughts about {context}. I can hear that this is important to you, and I'm here to listen.",
+                "I appreciate you opening up about {context}. Your perspective on this situation is really valuable.",
+                "What you're sharing about {context} gives me insight into what you're experiencing. I'm glad you felt comfortable expressing this.",
+                "I hear what you're saying about {context}. It's clear you've been thinking deeply about this situation.",
+                "Your reflection on {context} shows a lot of thoughtfulness. I'm honored that you're sharing this with me.",
+                "I can see that {context} has been on your mind. Thank you for trusting me with these thoughts."
             ]
         }
 
-        # Frases de seguimiento basadas en intensidad emocional
-        # Proporcionan continuidad apropiada según el nivel de emoción detectado
+        # Frases de seguimiento mejoradas basadas en intensidad emocional
+        # Proporcionan continuidad apropiada y más natural según el nivel de emoción detectado
         self.follow_up_phrases = {
             'high_intensity': [
                 "Would you like to talk more about this?",
-                "How are you coping with everything?",
-                "Is there anything specific that might help right now?",
-                "Would it help to explore this further?",
-                "What kind of support would be most helpful?"
+                "How are you coping with everything right now?",
+                "Is there anything specific that might help you feel better?",
+                "Would it help to explore this situation further?",
+                "What kind of support would be most helpful for you?",
+                "Do you have people around you who understand what you're going through?",
+                "How long have you been dealing with feelings this intense?",
+                "What usually helps you when things feel this overwhelming?"
             ],
             'medium_intensity': [
-                "How are you feeling about everything?",
+                "How are you feeling about everything overall?",
                 "Would you like to share more about your experience?",
-                "What's been on your mind lately?",
-                "How can I best support you through this?",
-                "What would help you feel better about this?"
+                "What's been on your mind lately about this?",
+                "How can I best support you through this situation?",
+                "What would help you feel better about this?",
+                "Have you been able to process these feelings with anyone?",
+                "What aspects of this situation feel most challenging?",
+                "How has this been affecting your daily life?"
             ],
             'low_intensity': [
                 "Thanks for sharing this with me.",
-                "I'm here if you need to talk more.",
+                "I'm here if you need to talk more about it.",
                 "How has your day been overall?",
-                "What else is on your mind?",
-                "How are you doing with everything else?"
+                "What else has been on your mind?",
+                "How are you doing with everything else in your life?",
+                "Is there anything else you'd like to explore?",
+                "What other thoughts or feelings have come up for you?",
+                "How do you usually handle situations like this?"
             ]
         }
 
-        # Palabras clave para identificación de contexto temático
+        # Palabras clave expandidas para identificación de contexto temático más precisa
         # Agrupa palabras relacionadas por categorías para mejor clasificación contextual
         self.context_keywords = {
             'work': ['job', 'work', 'boss', 'colleague', 'office', 'meeting', 'project', 'deadline', 
-                     'career', 'workplace', 'coworker', 'manager', 'employee', 'salary', 'promotion'],
+                     'career', 'workplace', 'coworker', 'manager', 'employee', 'salary', 'promotion',
+                     'interview', 'resignation', 'fired', 'hired', 'overtime', 'corporate', 'company',
+                     'supervisor', 'team', 'performance', 'evaluation', 'professional', 'business'],
             'relationship': ['partner', 'friend', 'family', 'relationship', 'love', 'breakup', 'dating',
-                             'boyfriend', 'girlfriend', 'husband', 'wife', 'marriage', 'divorce'],
+                             'boyfriend', 'girlfriend', 'husband', 'wife', 'marriage', 'divorce',
+                             'mother', 'father', 'sister', 'brother', 'parents', 'children', 'kids',
+                             'ex', 'crush', 'romantic', 'social', 'friendship', 'argue', 'fight'],
             'health': ['sick', 'doctor', 'hospital', 'pain', 'health', 'medicine', 'treatment',
-                       'illness', 'medical', 'diagnosis', 'surgery', 'therapy'],
+                       'illness', 'medical', 'diagnosis', 'surgery', 'therapy', 'symptoms',
+                       'tired', 'exhausted', 'headache', 'fever', 'appointment', 'prescription'],
             'school': ['school', 'teacher', 'student', 'exam', 'grade', 'homework', 'class',
-                       'university', 'college', 'study', 'education', 'degree'],
+                       'university', 'college', 'study', 'education', 'degree', 'semester',
+                       'course', 'professor', 'assignment', 'thesis', 'graduation', 'academic'],
             'financial': ['money', 'financial', 'budget', 'debt', 'bills', 'expense', 'income',
-                          'savings', 'loan', 'credit', 'payment'],
+                          'savings', 'loan', 'credit', 'payment', 'broke', 'expensive', 'cheap',
+                          'afford', 'purchase', 'investment', 'mortgage', 'rent', 'tax'],
             'personal': ['myself', 'personal', 'identity', 'self', 'confidence', 'growth',
-                         'anxiety', 'depression', 'stress', 'mental']
+                         'anxiety', 'depression', 'stress', 'mental', 'therapy', 'counseling',
+                         'lonely', 'overwhelmed', 'tired', 'emotional', 'feelings', 'thoughts'],
+            'life_events': ['birthday', 'wedding', 'funeral', 'graduation', 'moving', 'travel',
+                           'vacation', 'holiday', 'celebration', 'anniversary', 'milestone'],
+            'loss_grief': ['death', 'died', 'funeral', 'grief', 'loss', 'goodbye', 'memorial',
+                          'miss', 'gone', 'passed away', 'mourning', 'grieving']
         }
 
-    def identify_context(self, text: str) -> str:
+        # Patrones contextuales más específicos para mejor análisis
+        self.context_patterns = {
+            'work_stress': ['deadline', 'pressure', 'overtime', 'workload', 'demanding'],
+            'work_conflict': ['boss', 'manager', 'colleague', 'workplace drama', 'unfair'],
+            'relationship_conflict': ['argue', 'fight', 'disagree', 'tension', 'misunderstanding'],
+            'relationship_loss': ['breakup', 'divorce', 'separation', 'ended', 'over'],
+            'health_concern': ['worried about', 'symptoms', 'pain', 'sick', 'medical'],
+            'academic_pressure': ['exam', 'test', 'grade', 'failing', 'stressed about school'],
+            'financial_stress': ['can\'t afford', 'broke', 'bills', 'debt', 'money problems'],
+            'personal_growth': ['learning', 'improving', 'changing', 'developing', 'working on myself'],
+            'life_transition': ['moving', 'new job', 'starting', 'ending', 'change']
+        }
+
+    def identify_context(self, text: str) -> Dict[str, any]:
         """
-        Identifica el contexto temático principal del texto analizado.
+        Identifica el contexto temático principal del texto con análisis más detallado.
         
-        Analiza el texto buscando palabras clave específicas para determinar
-        el contexto principal (trabajo, relaciones, salud, escuela, etc.).
+        Analiza el texto buscando palabras clave específicas, patrones contextuales
+        y elementos emocionales para determinar un contexto rico y detallado.
         
         Args:
             text (str): Texto a analizar para identificación de contexto
             
         Returns:
-            str: Categoría de contexto identificada ('work', 'relationship', 'health', etc.)
-                 o 'general' si no se identifica un contexto específico
+            Dict[str, any]: Diccionario con información contextual detallada:
+                - main_context: Categoría principal del contexto
+                - sub_context: Sub-categoría específica si se detecta
+                - key_elements: Elementos clave encontrados en el texto
+                - emotional_triggers: Palabras o frases que indican carga emocional
+                - temporal_indicators: Indicadores temporales (pasado, presente, futuro)
                  
         Proceso:
             1. Convierte el texto a minúsculas para análisis
-            2. Busca palabras clave de cada categoría
-            3. Asigna puntuaciones según coincidencias
-            4. Retorna la categoría con mayor puntuación
+            2. Busca palabras clave de cada categoría con pesos diferenciados
+            3. Identifica patrones contextuales específicos
+            4. Detecta elementos emocionales y temporales
+            5. Retorna información contextual completa
         """
         text_lower = text.lower()
         context_scores = {}
+        detected_patterns = []
+        key_elements = []
+        emotional_triggers = []
+        temporal_indicators = {'past': False, 'present': False, 'future': False}
+        
+        # Análisis básico de categorías con pesos mejorados
         for context, keywords in self.context_keywords.items():
-            score = sum(1 for keyword in keywords if keyword in text_lower)
-            score += sum(2 for keyword in keywords if f' {keyword} ' in f' {text_lower} ')
+            score = 0
+            found_keywords = []
+            for keyword in keywords:
+                if f' {keyword} ' in f' {text_lower} ':
+                    score += 3  # Palabra completa tiene mayor peso
+                    found_keywords.append(keyword)
+                elif keyword in text_lower:
+                    score += 1  # Palabra parcial tiene menor peso
+                    found_keywords.append(keyword)
+            
             if score > 0:
                 context_scores[context] = score
-        return max(context_scores, key=context_scores.get) if context_scores else 'general'
+                key_elements.extend(found_keywords)
+        
+        # Análisis de patrones contextuales específicos
+        for pattern_name, pattern_words in self.context_patterns.items():
+            for pattern in pattern_words:
+                if pattern in text_lower:
+                    detected_patterns.append(pattern_name)
+                    context_scores[pattern_name.split('_')[0]] = context_scores.get(pattern_name.split('_')[0], 0) + 5
+        
+        # Detección de indicadores temporales
+        past_indicators = ['was', 'were', 'had', 'did', 'yesterday', 'last', 'ago', 'before', 'used to']
+        present_indicators = ['am', 'is', 'are', 'now', 'today', 'currently', 'right now']
+        future_indicators = ['will', 'going to', 'tomorrow', 'next', 'soon', 'planning', 'hope']
+        
+        if any(indicator in text_lower for indicator in past_indicators):
+            temporal_indicators['past'] = True
+        if any(indicator in text_lower for indicator in present_indicators):
+            temporal_indicators['present'] = True
+        if any(indicator in text_lower for indicator in future_indicators):
+            temporal_indicators['future'] = True
+        
+        # Detección de disparadores emocionales
+        emotion_triggers = ['frustrated', 'angry', 'upset', 'sad', 'happy', 'excited', 'worried', 
+                           'anxious', 'scared', 'disappointed', 'overwhelmed', 'stressed', 'confused']
+        emotional_triggers = [trigger for trigger in emotion_triggers if trigger in text_lower]
+        
+        # Determinar contexto principal y sub-contexto
+        main_context = max(context_scores, key=context_scores.get) if context_scores else 'general'
+        sub_context = None
+        
+        # Identificar sub-contexto basado en patrones detectados
+        relevant_patterns = [p for p in detected_patterns if p.startswith(main_context)]
+        if relevant_patterns:
+            sub_context = relevant_patterns[0]
+        
+        return {
+            'main_context': main_context,
+            'sub_context': sub_context,
+            'key_elements': list(set(key_elements)),
+            'emotional_triggers': emotional_triggers,
+            'temporal_indicators': temporal_indicators,
+            'detected_patterns': detected_patterns,
+            'context_score': context_scores.get(main_context, 0)
+        }
+
+    def extract_key_phrases(self, text: str, context_info: Dict[str, any]) -> List[str]:
+        """
+        Extrae frases clave del texto que son relevantes para el contexto emocional.
+        
+        Identifica y extrae las frases más significativas del texto que pueden
+        ser utilizadas para crear respuestas más personalizadas y específicas.
+        
+        Args:
+            text (str): Texto original del usuario
+            context_info (Dict): Información contextual del texto
+            
+        Returns:
+            List[str]: Lista de frases clave extraídas y procesadas
+        """
+        # Tokenizar el texto en oraciones
+        sentences = re.split(r'[.!?]\s+', text.strip())
+        key_phrases = []
+        
+        # Filtrar oraciones significativas (más de 3 palabras)
+        meaningful_sentences = [s.strip() for s in sentences if len(s.split()) > 3]
+        
+        # Priorizar oraciones que contienen elementos contextuales clave
+        for sentence in meaningful_sentences:
+            sentence_lower = sentence.lower()
+            relevance_score = 0
+            
+            # Incrementar puntuación por elementos contextuales
+            for element in context_info.get('key_elements', []):
+                if element in sentence_lower:
+                    relevance_score += 2
+            
+            # Incrementar puntuación por disparadores emocionales
+            for trigger in context_info.get('emotional_triggers', []):
+                if trigger in sentence_lower:
+                    relevance_score += 3
+            
+            # Incrementar puntuación por palabras de intensidad
+            for intensity_list in self.intensity_words.values():
+                for word in intensity_list:
+                    if word in sentence_lower:
+                        relevance_score += 1
+            
+            if relevance_score > 0:
+                key_phrases.append((sentence, relevance_score))
+        
+        # Ordenar por relevancia y tomar las mejores
+        key_phrases.sort(key=lambda x: x[1], reverse=True)
+        return [phrase[0] for phrase in key_phrases[:3]]  # Top 3 frases más relevantes
 
     def generate_context_summary(self, text: str) -> str:
         """
-        Genera un resumen contextual del texto para usar en respuestas empáticas.
+        Genera un resumen contextual más natural y específico del texto.
         
-        Crea un resumen contextualizado que puede ser insertado en los patrones
-        de respuesta empática, convirtiendo el texto de primera a segunda persona.
+        Crea un resumen contextualizado que se integra de manera fluida en las
+        respuestas empáticas, considerando el contexto específico y elementos emocionales.
         
         Args:
             text (str): Texto original del usuario
             
         Returns:
-            str: Resumen contextual en segunda persona para usar en respuestas
-            
-        Proceso:
-            1. Identifica el tipo de contexto
-            2. Extrae la oración más informativa
-            3. Convierte de primera a segunda persona
-            4. Retorna un resumen apropiado para respuestas empáticas
+            str: Resumen contextual natural para usar en respuestas
         """
-        context_type = self.identify_context(text)
-        context_phrases = {
-            'work': ['your job situation', 'work challenges', 'workplace issues'],
-            'relationship': ['your relationship', 'this personal situation', 'what happened'],
-            'health': ['your health concerns', 'what you\'re going through', 'this medical situation'],
-            'school': ['your studies', 'school pressures', 'academic challenges'],
-            'financial': ['your financial situation', 'money worries', 'financial stress'],
-            'personal': ['what you\'re experiencing', 'your personal journey', 'these feelings']
+        context_info = self.identify_context(text)
+        main_context = context_info['main_context']
+        sub_context = context_info['sub_context']
+        key_elements = context_info['key_elements']
+        emotional_triggers = context_info['emotional_triggers']
+        temporal_indicators = context_info['temporal_indicators']
+        
+        # Extraer frases clave del texto
+        key_phrases = self.extract_key_phrases(text, context_info)
+        
+        # Generar resumen basado en el contexto específico y sub-contexto
+        if sub_context:
+            summary = self._generate_specific_context_summary(main_context, sub_context, key_phrases, emotional_triggers, temporal_indicators)
+        else:
+            summary = self._generate_general_context_summary(main_context, key_phrases, key_elements, emotional_triggers, temporal_indicators)
+        
+        return summary
+
+    def _generate_specific_context_summary(self, main_context: str, sub_context: str, 
+                                         key_phrases: List[str], emotional_triggers: List[str],
+                                         temporal_indicators: Dict[str, bool]) -> str:
+        """Genera resumen para contextos específicos identificados."""
+        
+        # Mapeo de sub-contextos a descripciones naturales
+        specific_summaries = {
+            'work_stress': "the intense pressure and demands you're facing at work",
+            'work_conflict': "the difficult situation you're dealing with at your workplace",
+            'relationship_conflict': "the tensions and disagreements in your relationship",
+            'relationship_loss': "the painful end of your relationship",
+            'health_concern': "the health issues you're worried about",
+            'academic_pressure': "the academic stress and pressure you're under",
+            'financial_stress': "the financial difficulties you're going through",
+            'personal_growth': "the personal changes and growth you're experiencing",
+            'life_transition': "the major life changes you're navigating"
         }
-        sentences = re.split(r'[.!?]\s+', text)
-        informative_sentences = [s for s in sentences if len(s.split()) > 3]
-        if informative_sentences:
-            main_sentence = max(informative_sentences, key=len)
-            simplified = re.sub(r'^(I|I\'m|I am|My|Me)\s+', '', main_sentence, flags=re.IGNORECASE)
-            simplified = simplified.lower().strip()
-            # Convertir de primera a segunda persona
-            simplified = self.convert_to_second_person(main_sentence)
-            return simplified
-        return random.choice(context_phrases.get(context_type, ["what you're going through"]))
+        
+        if sub_context in specific_summaries:
+            base_summary = specific_summaries[sub_context]
+        else:
+            base_summary = f"what you're experiencing with {main_context}"
+        
+        # Añadir elementos temporales para más naturalidad
+        if temporal_indicators['past']:
+            base_summary = base_summary.replace("you're", "you were")
+            base_summary = f"what you went through with {base_summary}"
+        elif temporal_indicators['future']:
+            base_summary = f"what you're anticipating with {base_summary}"
+        
+        # Integrar elementos emocionales si están presentes
+        if emotional_triggers:
+            primary_emotion = emotional_triggers[0]
+            base_summary = f"how {primary_emotion} you're feeling about {base_summary}"
+        
+        return base_summary
+
+    def _generate_general_context_summary(self, main_context: str, key_phrases: List[str], 
+                                        key_elements: List[str], emotional_triggers: List[str],
+                                        temporal_indicators: Dict[str, bool]) -> str:
+        """Genera resumen para contextos generales."""
+        
+        # Si tenemos frases clave, usar la más relevante convertida a segunda persona
+        if key_phrases:
+            best_phrase = key_phrases[0]
+            converted_phrase = self.convert_to_second_person(best_phrase)
+            
+            # Limpiar y simplificar la frase
+            converted_phrase = re.sub(r'^(you\s+)', '', converted_phrase, flags=re.IGNORECASE).strip()
+            converted_phrase = converted_phrase.lower()
+            
+            # Asegurar que comience de manera natural
+            if not converted_phrase.startswith(('the', 'this', 'what', 'how', 'that')):
+                converted_phrase = f"what happened with {converted_phrase}"
+            
+            return converted_phrase
+        
+        # Fallback a descripciones contextuales generales
+        context_descriptions = {
+            'work': "your work situation",
+            'relationship': "your relationship situation", 
+            'health': "your health concerns",
+            'school': "your academic situation",
+            'financial': "your financial concerns",
+            'personal': "what you're going through personally",
+            'life_events': "this important event in your life",
+            'loss_grief': "the loss you're experiencing"
+        }
+        
+        base_description = context_descriptions.get(main_context, "what you're going through")
+        
+        # Añadir especificidad si hay elementos clave prominentes
+        if key_elements:
+            prominent_elements = [elem for elem in key_elements if len(elem) > 3][:2]
+            if prominent_elements:
+                elements_str = " and ".join(prominent_elements)
+                base_description = f"the challenges with {elements_str}"
+        
+        return base_description
 
     def calculate_emotional_intensity(self, text: str) -> str:
         """
@@ -405,90 +631,268 @@ class EmpatheticResponseGenerator:
     
     def generate_empathetic_response(self, text: str, emotion: str) -> str:
         """
-        Genera una respuesta empática completa basada en el texto y emoción detectados.
+        Genera una respuesta empática completa y mejorada basada en el texto y emoción detectadas.
         
-        Método principal que coordina todo el proceso de análisis y generación
-        de respuestas empáticas personalizadas.
+        Método principal que coordina todo el proceso de análisis avanzado y generación
+        de respuestas empáticas contextualizadas y naturales.
         
         Args:
             text (str): Texto original del usuario
             emotion (str): Emoción detectada en el texto
             
         Returns:
-            str: Respuesta empática completa con contexto y seguimiento
+            str: Respuesta empática completa con contexto rico y seguimiento
             
-        Proceso de generación:
-            1. Normaliza la emoción recibida
-            2. Mapea emociones desconocidas a categorías principales
-            3. Genera contexto personalizado del texto
-            4. Selecciona patrón de respuesta apropiado
-            5. Calcula intensidad emocional
-            6. Añade frase de seguimiento apropiada
-            7. Combina todo en una respuesta coherente
+        Proceso de generación mejorado:
+            1. Análisis contextual profundo del texto
+            2. Normalización y mapeo inteligente de emociones
+            3. Generación de contexto natural y específico
+            4. Selección de patrón de respuesta contextualizado
+            5. Cálculo de intensidad emocional para personalización
+            6. Integración fluida de elementos contextuales
+            7. Adición de seguimiento apropiado según intensidad
             
-        Características:
-            - Respuestas contextualizadas y personalizadas
-            - Manejo robusto de emociones no reconocidas
-            - Intensidad emocional adaptativa
-            - Frases de seguimiento apropiadas
+        Características avanzadas:
+            - Análisis contextual multi-dimensional
+            - Respuestas naturales y específicas
+            - Integración fluida del contexto personal
+            - Adaptación según intensidad emocional
+            - Manejo robusto de emociones complejas
         """
+        # Paso 1: Análisis contextual profundo
+        context_info = self.identify_context(text)
+        
+        # Paso 2: Normalización inteligente de emociones
         emotion = emotion.lower()
         if emotion not in self.empathetic_patterns:
             emotion_category = self.emotion_mapping.get(emotion, 'neutral')
+            
+            # Mapeo más inteligente basado en contexto y contenido
             if emotion_category == 'positive':
-                emotion = 'joy'
+                if any(word in text.lower() for word in ['excited', 'thrilled', 'amazing', 'fantastic']):
+                    emotion = 'joy'
+                elif context_info['main_context'] == 'work' and any(word in text.lower() for word in ['promotion', 'success', 'achieved']):
+                    emotion = 'joy'
+                else:
+                    emotion = 'joy'
+                    
             elif emotion_category == 'negative':
-                if any(word in text.lower() for word in ['angry', 'mad', 'frustrated']): emotion = 'anger'
-                elif any(word in text.lower() for word in ['sad', 'depressed', 'upset']): emotion = 'sadness'
-                elif any(word in text.lower() for word in ['scared', 'afraid', 'worried']): emotion = 'fear'
-                elif any(word in text.lower() for word in ['disappointed', 'let down']): emotion = 'disappointment'
-                elif any(word in text.lower() for word in ['embarrassed', 'ashamed']): emotion = 'embarrassment'
-                else: emotion = 'sadness'
+                # Mapeo contextual más preciso
+                text_lower = text.lower()
+                
+                if context_info['sub_context'] == 'work_stress' or any(word in text_lower for word in ['frustrated', 'angry', 'mad', 'infuriated']):
+                    emotion = 'anger'
+                elif context_info['sub_context'] in ['relationship_loss', 'loss_grief'] or any(word in text_lower for word in ['sad', 'depressed', 'heartbroken', 'devastated']):
+                    emotion = 'sadness'
+                elif any(word in text_lower for word in ['scared', 'afraid', 'worried', 'anxious', 'nervous']):
+                    emotion = 'fear'
+                elif any(word in text_lower for word in ['disappointed', 'let down', 'expected', 'hoped']):
+                    emotion = 'disappointment'
+                elif any(word in text_lower for word in ['embarrassed', 'ashamed', 'humiliated', 'mortified']):
+                    emotion = 'embarrassment'
+                elif any(word in text_lower for word in ['disgusted', 'repulsed', 'sick', 'revolting']):
+                    emotion = 'disgust'
+                else:
+                    # Default basado en contexto
+                    if context_info['main_context'] in ['work', 'school']:
+                        emotion = 'anger'  # Más común en contextos de estrés
+                    else:
+                        emotion = 'sadness'
             else:
                 emotion = 'neutral'
-        context = self.generate_context_summary(text)
-        print("CONTEXT:", context)  # Debugging line to check context generation
-        pattern = random.choice(self.empathetic_patterns.get(emotion, self.empathetic_patterns['neutral']))
-        main_response = pattern.format(context=context)
-        follow_up = random.choice(self.follow_up_phrases[self.calculate_emotional_intensity(text)])
-        return f"{main_response} {follow_up}"
+        
+        # Paso 3: Generación de contexto natural y específico
+        context_summary = self.generate_context_summary(text)
+        
+        # Paso 4: Selección de patrón contextualizado
+        available_patterns = self.empathetic_patterns.get(emotion, self.empathetic_patterns['neutral'])
+        
+        # Seleccionar patrón más apropiado basado en contexto e intensidad
+        intensity = self.calculate_emotional_intensity(text)
+        
+        # Filtrar patrones según intensidad cuando sea apropiado
+        if intensity == 'high_intensity':
+            # Para alta intensidad, preferir patrones más fuertes
+            preferred_patterns = [p for p in available_patterns if any(word in p.lower() for word in 
+                                ['really', 'completely', 'absolutely', 'deeply', 'truly', 'so', 'incredibly'])]
+            if preferred_patterns:
+                available_patterns = preferred_patterns
+        
+        selected_pattern = random.choice(available_patterns)
+        
+        # Paso 5: Formatear respuesta con contexto
+        main_response = selected_pattern.format(context=context_summary)
+        
+        # Paso 6: Seleccionar seguimiento apropiado
+        follow_up_options = self.follow_up_phrases[intensity]
+        
+        # Personalizar seguimiento basado en contexto cuando sea relevante
+        if context_info['main_context'] == 'work' and intensity == 'high_intensity':
+            work_specific_followups = [
+                "How are you managing the stress at work?",
+                "What support do you have in your workplace?", 
+                "Have you been able to talk to anyone about this situation?"
+            ]
+            follow_up_options.extend(work_specific_followups)
+        elif context_info['main_context'] == 'relationship' and emotion in ['sadness', 'anger']:
+            relationship_followups = [
+                "Do you have support from friends or family right now?",
+                "How are you taking care of yourself through this?",
+                "What has been helping you process these feelings?"
+            ]
+            follow_up_options.extend(relationship_followups)
+        
+        follow_up = random.choice(follow_up_options)
+        
+        # Paso 7: Combinar respuesta final con transición natural
+        if intensity == 'high_intensity':
+            return f"{main_response} {follow_up}"
+        else:
+            # Para intensidades menores, usar transiciones más suaves
+            transitions = ["", "I'm curious, ", "I wonder, ", "If you don't mind me asking, "]
+            transition = random.choice(transitions)
+            return f"{main_response} {transition}{follow_up.lower()}"
+    
+    def analyze_emotional_context_depth(self, text: str, emotion: str, context_info: Dict[str, any]) -> Dict[str, any]:
+        """
+        Realiza un análisis profundo del contexto emocional para personalización avanzada.
+        
+        Combina información emocional y contextual para crear un perfil más rico
+        que permita respuestas más precisas y empáticas.
+        
+        Args:
+            text (str): Texto original del usuario
+            emotion (str): Emoción detectada
+            context_info (Dict): Información contextual previamente analizada
+            
+        Returns:
+            Dict[str, any]: Análisis contextual profundo con recomendaciones
+        """
+        analysis = {
+            'emotional_complexity': 'simple',
+            'support_needs': [],
+            'conversation_direction': 'general',
+            'empathy_level': 'standard',
+            'follow_up_suggestions': []
+        }
+        
+        text_lower = text.lower()
+        
+        # Determinar complejidad emocional
+        emotion_words = context_info.get('emotional_triggers', [])
+        if len(emotion_words) > 2:
+            analysis['emotional_complexity'] = 'complex'
+        elif len(emotion_words) > 1:
+            analysis['emotional_complexity'] = 'moderate'
+        
+        # Identificar necesidades de apoyo específicas
+        if 'overwhelmed' in text_lower or 'too much' in text_lower:
+            analysis['support_needs'].append('stress_management')
+        if any(word in text_lower for word in ['alone', 'isolated', 'nobody']):
+            analysis['support_needs'].append('social_connection')
+        if any(word in text_lower for word in ['help', 'advice', 'what should']):
+            analysis['support_needs'].append('guidance')
+        if any(word in text_lower for word in ['understand', 'confused', 'don\'t know']):
+            analysis['support_needs'].append('clarity')
+        
+        # Determinar dirección de conversación
+        if context_info['main_context'] in ['work', 'school'] and emotion in ['anger', 'stress']:
+            analysis['conversation_direction'] = 'problem_solving'
+        elif context_info['main_context'] == 'relationship' and emotion in ['sadness', 'anger']:
+            analysis['conversation_direction'] = 'emotional_processing'
+        elif emotion == 'fear':
+            analysis['conversation_direction'] = 'reassurance'
+        elif emotion == 'joy':
+            analysis['conversation_direction'] = 'celebration'
+        
+        # Ajustar nivel de empatía
+        intensity = self.calculate_emotional_intensity(text)
+        if intensity == 'high_intensity' and emotion in ['sadness', 'fear', 'anger']:
+            analysis['empathy_level'] = 'high'
+        elif context_info['main_context'] in ['loss_grief', 'health']:
+            analysis['empathy_level'] = 'high'
+        
+        return analysis
 
 # ==================== SECCIÓN DE PRUEBAS ====================
 # Ejecución de casos de prueba para validar el funcionamiento del generador
 
 if __name__ == "__main__":
     """
-    Sección de pruebas para validar el funcionamiento del generador de respuestas empáticas.
+    Sección de pruebas mejorada para validar el funcionamiento del generador de respuestas empáticas.
     
-    Incluye casos de prueba para diferentes emociones y contextos:
-    - Anger (ira): Frustración laboral
-    - Sadness (tristeza): Pérdida personal
-    - Fear (miedo): Ansiedad por presentación
-    - Joy (alegría): Promoción laboral
-    - Surprise (sorpresa): Noticia inesperada
-    - Embarrassment (vergüenza): Situación incómoda
-    - Disappointment (decepción): Planes cancelados
-    
-    Cada caso muestra:
-    - Texto original del usuario
-    - Emoción detectada
-    - Respuesta empática generada
+    Incluye casos de prueba variados que demuestran las capacidades mejoradas:
+    - Análisis contextual profundo
+    - Respuestas más naturales y específicas
+    - Mejor integración del contexto personal
+    - Manejo de emociones complejas
     """
     generator = EmpatheticResponseGenerator()
+    
+    # Casos de prueba expandidos con contextos más específicos y realistas
     test_cases = [
-        ("I'm so frustrated with my job. My boss keeps giving me impossible deadlines and I can't keep up.", "anger"),
-        ("I just lost my grandmother and I don't know how to cope with this loss.", "sadness"),
-        ("I'm worried about my upcoming presentation. What if I mess up in front of everyone?", "fear"),
-        ("I got promoted today! I can't believe it actually happened.", "joy"),
-        ("My friend just told me something that completely shocked me.", "surprise"),
-        ("I feel so embarrassed about what happened at the meeting today.", "embarrassment"),
-        ("I'm really disappointed that my vacation got cancelled.", "disappointment")
+        # Casos de trabajo con diferentes sub-contextos
+        ("I'm absolutely furious with my manager. He keeps giving me impossible deadlines while my colleagues get easy assignments. I've been working overtime every day this week and I'm completely burned out.", "anger"),
+        ("I just found out I didn't get the promotion I've been working toward for two years. My boss gave it to someone who just started six months ago. I feel so defeated and don't know if I should even stay at this company.", "disappointment"),
+        
+        # Casos de relaciones con más detalle emocional
+        ("My girlfriend of three years broke up with me yesterday. She said she needs space to figure things out, but I think she's seeing someone else. I'm devastated and can't stop crying. I don't know how to move on from this.", "sadness"),
+        ("I had the most amazing date last night! We talked for hours and I felt like I could be completely myself. I haven't felt this connected to someone in years and I'm so excited to see where this goes.", "joy"),
+        
+        # Casos de salud con preocupaciones específicas
+        ("I've been having these chest pains for weeks and the doctor wants to run more tests. I'm terrified that it might be something serious. I can't sleep and I keep imagining the worst-case scenarios.", "fear"),
+        
+        # Casos académicos con presión específica
+        ("I'm three weeks behind on my thesis and my advisor is getting impatient. I feel like I'm drowning in research and I don't even know if my argument makes sense anymore. Everyone else seems to have it figured out.", "anxiety"),
+        
+        # Casos de vida personal complejos
+        ("I feel so embarrassed about what happened at the party last weekend. I got way too drunk and said some things I shouldn't have. Now my friends are acting weird around me and I don't know how to fix it.", "embarrassment"),
+        ("My mom called to tell me my childhood dog passed away. I know it sounds silly, but I've had him since I was eight and he was like my best friend. I'm at work trying not to cry but I feel so empty inside.", "grief"),
+        
+        # Casos con emociones mixtas
+        ("I got accepted into my dream graduate program, but it means moving across the country and leaving my family behind. I'm excited but also terrified about starting over in a new place where I don't know anyone.", "mixed_emotions"),
+        
+        # Casos de transiciones de vida
+        ("I'm getting married in two months and everyone keeps asking if I'm excited. Honestly, I'm having second thoughts. I love my fiancé but I'm scared about making such a huge commitment. What if we're not ready?", "confusion")
     ]
 
-    print("=== Generador de Respuestas Empáticas ===\n")
-    for text, emotion in test_cases:
-        print(f"Texto: {text}")
-        print(f"Emoción: {emotion}")
+    print("=== Generador de Respuestas Empáticas - Versión Mejorada ===\n")
+    print("Demostrando capacidades mejoradas de análisis contextual y respuestas naturales:\n")
+    
+    for i, (text, emotion) in enumerate(test_cases, 1):
+        print(f"CASO {i}:")
+        print(f"Texto: \"{text}\"")
+        print(f"Emoción detectada: {emotion}")
+        
+        # Mostrar análisis contextual
+        context_info = generator.identify_context(text)
+        print(f"Contexto principal: {context_info['main_context']}")
+        if context_info['sub_context']:
+            print(f"Sub-contexto: {context_info['sub_context']}")
+        print(f"Elementos clave: {', '.join(context_info['key_elements'][:3])}")
+        if context_info['emotional_triggers']:
+            print(f"Disparadores emocionales: {', '.join(context_info['emotional_triggers'])}")
+        
+        # Generar y mostrar respuesta
         response = generator.generate_empathetic_response(text, emotion)
-        print(f"Respuesta: {response}")
+        print(f"RESPUESTA EMPÁTICA: {response}")
+        print("-" * 100)
+        print()
+
+    print("\n=== Pruebas de Análisis Contextual Específico ===\n")
+    
+    # Casos para demostrar análisis contextual específico
+    context_test_cases = [
+        "I'm worried about my presentation tomorrow at work",
+        "My relationship with my partner has been really difficult lately",
+        "I'm struggling with my mental health and feeling really overwhelmed"
+    ]
+    
+    for text in context_test_cases:
+        print(f"Texto: \"{text}\"")
+        context_info = generator.identify_context(text)
+        context_summary = generator.generate_context_summary(text)
+        print(f"Análisis contextual: {context_info}")
+        print(f"Resumen contextual: \"{context_summary}\"")
         print("-" * 80)
+        print()
