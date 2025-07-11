@@ -177,7 +177,9 @@ class EmpatheticResponseGenerator:
             main_sentence = max(informative_sentences, key=len)
             simplified = re.sub(r'^(I|I\'m|I am|My|Me)\s+', '', main_sentence, flags=re.IGNORECASE)
             simplified = simplified.lower().strip()
-            return simplified[:50] + ('...' if len(simplified) > 50 else '')
+            # Convertir de primera a segunda persona
+            simplified = self.convert_to_second_person(main_sentence)
+            return simplified
         return random.choice(context_phrases.get(context_type, ["what you're going through"]))
 
     def calculate_emotional_intensity(self, text: str) -> str:
@@ -190,7 +192,60 @@ class EmpatheticResponseGenerator:
         repeated_letters = len(re.findall(r'(.)\1{2,}', text_lower))
         total = exclamation_count * 2 + question_count + caps_words + high_score * 3 + medium_score + repeated_letters * 2
         return 'high_intensity' if total > 4 else 'medium_intensity' if total > 1 else 'low_intensity'
-
+    
+    def convert_to_second_person(self, text: str) -> str:
+        """Convierte texto de primera persona a segunda persona"""
+        # Diccionario de conversiones
+        conversions = {
+            r'\bI am\b': 'you are',
+            r'\bI\'m\b': 'you\'re',
+            r'\bI was\b': 'you were',
+            r'\bI have\b': 'you have',
+            r'\bI\'ve\b': 'you\'ve',
+            r'\bI had\b': 'you had',
+            r'\bI\'d\b': 'you\'d',
+            r'\bI will\b': 'you will',
+            r'\bI\'ll\b': 'you\'ll',
+            r'\bI can\b': 'you can',
+            r'\bI can\'t\b': 'you can\'t',
+            r'\bI cannot\b': 'you cannot',
+            r'\bI do\b': 'you do',
+            r'\bI don\'t\b': 'you don\'t',
+            r'\bI did\b': 'you did',
+            r'\bI didn\'t\b': 'you didn\'t',
+            r'\bI feel\b': 'you feel',
+            r'\bI think\b': 'you think',
+            r'\bI know\b': 'you know',
+            r'\bI want\b': 'you want',
+            r'\bI need\b': 'you need',
+            r'\bI like\b': 'you like',
+            r'\bI love\b': 'you love',
+            r'\bI hate\b': 'you hate',
+            r'\bI get\b': 'you get',
+            r'\bI got\b': 'you got',
+            r'\bI went\b': 'you went',
+            r'\bI go\b': 'you go',
+            r'\bI see\b': 'you see',
+            r'\bI saw\b': 'you saw',
+            r'\bI hear\b': 'you hear',
+            r'\bI heard\b': 'you heard',
+            r'\bI\b': 'you',
+            r'\bme\b': 'you',
+            r'\bmy\b': 'your',
+            r'\bmine\b': 'yours',
+            r'\bmyself\b': 'yourself'
+        }
+        
+        result = text
+        for pattern, replacement in conversions.items():
+            result = re.sub(pattern, replacement, result, flags=re.IGNORECASE)
+        
+        # Ajustar la capitalización si es necesario
+        if result and result[0].islower() and text[0].isupper():
+            result = result[0].upper() + result[1:]
+            
+        return result
+    
     def generate_empathetic_response(self, text: str, emotion: str) -> str:
         emotion = emotion.lower()
         if emotion not in self.empathetic_patterns:
@@ -207,6 +262,7 @@ class EmpatheticResponseGenerator:
             else:
                 emotion = 'neutral'
         context = self.generate_context_summary(text)
+        print("CONTEXT:", context)  # Debugging line to check context generation
         pattern = random.choice(self.empathetic_patterns.get(emotion, self.empathetic_patterns['neutral']))
         main_response = pattern.format(context=context)
         follow_up = random.choice(self.follow_up_phrases[self.calculate_emotional_intensity(text)])
