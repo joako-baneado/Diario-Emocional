@@ -2,3 +2,7 @@
 [01:17] Bot: I appreciate you taking the time to express how you feel about what you're going through. Thanks for sharing this with me. / neutral
 [01:17] Tú: im feeling sad today
 [01:17] Bot: Your sadness comes through in your words. im feeling sad today must be weighing heavily on you. Thanks for sharing this with me. / sadness
+[01:33] Tú: hi there
+[01:33] Bot: I hear what you're saying about what you're going through. That's an important point. I'm here if you need to talk more. / neutral
+[01:33] Tú: im feeling sad today, my cat just died
+[01:33] Bot: It takes courage to express these feelings. im feeling sad today, my cat just died would be hard for anyone to handle. How are you doing with everything else? / sadness

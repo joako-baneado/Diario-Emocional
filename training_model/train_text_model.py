@@ -9,7 +9,7 @@ if __name__ == '__main__':
     import os
 
     # Entrenamiento con optimización incluida
-    df = pd.read_csv("./datasets/dataset.csv")
+    df = pd.read_csv("./training_model/datasets/dataset.csv")
     label_encoder = LabelEncoder()
     df['label'] = label_encoder.fit_transform(df['emotion'])
 
@@ -25,6 +25,7 @@ if __name__ == '__main__':
     tokenized_dataset = tokenized_dataset.remove_columns(["text"])
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(device)
     model = AutoModelForSequenceClassification.from_pretrained(
         model_name,
         num_labels=len(label_encoder.classes_)
@@ -63,7 +64,7 @@ if __name__ == '__main__':
 
     trainer.train()
 
-    save_path = "../ml_models/transformers/emotion_model/"
+    save_path = "./ml_models/transformers/emotion_model/"
     model.save_pretrained(save_path)
     tokenizer.save_pretrained(save_path)
     joblib.dump(label_encoder, os.path.join(save_path, "label_encoder.pkl"))
