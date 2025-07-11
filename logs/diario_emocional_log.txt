@@ -6,3 +6,7 @@
 [01:33] Bot: I hear what you're saying about what you're going through. That's an important point. I'm here if you need to talk more. / neutral
 [01:33] Tú: im feeling sad today, my cat just died
 [01:33] Bot: It takes courage to express these feelings. im feeling sad today, my cat just died would be hard for anyone to handle. How are you doing with everything else? / sadness
+[02:10] Tú: hi there
+[02:10] Bot: Your perspective on what you're going through is valuable. How can I best support you? Thanks for sharing this with me. / neutral
+[02:10] Tú: im quite good today, i got pass my work interview
+[02:10] Bot: I'm so glad you're experiencing this positivity with im quite good today, you got pass your work interview. What else is on your mind? / joy

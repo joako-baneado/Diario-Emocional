@@ -1,3 +1,28 @@
+"""
+Módulo de Generación de Respuestas Empáticas para la Aplicación de Diario Emocional
+
+Este módulo contiene la funcionalidad principal para generar respuestas empáticas y contextualizadas
+basadas en el análisis de texto emocional. Utiliza técnicas de procesamiento de lenguaje natural
+para comprender el contexto, intensidad emocional y generar respuestas apropiadas.
+
+Dependencias:
+    - re: Para expresiones regulares y procesamiento de texto
+    - random: Para selección aleatoria de patrones de respuesta
+    - typing: Para anotaciones de tipo
+    - nltk: Para procesamiento de lenguaje natural
+    - collections: Para contadores y estructuras de datos
+
+Funcionalidades principales:
+    - Análisis de contexto emocional en texto
+    - Detección de intensidad emocional
+    - Generación de respuestas empáticas personalizadas
+    - Mapeo de emociones a categorías
+    - Conversión de perspectiva (primera a segunda persona)
+
+Clases:
+    - EmpatheticResponseGenerator: Generador principal de respuestas empáticas
+"""
+
 import re
 import random
 from typing import Dict, List
@@ -8,8 +33,20 @@ from nltk.stem import WordNetLemmatizer
 from collections import Counter
 import string
 
-# Descargar recursos necesarios de NLTK
+# Función para descargar recursos necesarios de NLTK
 def download_nltk_resources():
+    """
+    Descarga automáticamente los recursos necesarios de NLTK si no están disponibles.
+    
+    Recursos descargados:
+        - punkt: Para tokenización de oraciones
+        - stopwords: Para filtrar palabras comunes
+        - wordnet: Para lematización
+        - omw-1.4: Base de datos multilingüe de WordNet
+    
+    Esta función verifica primero si cada recurso existe antes de descargarlo,
+    evitando descargas innecesarias en ejecuciones posteriores.
+    """
     resources = ['punkt', 'stopwords', 'wordnet', 'omw-1.4']
     for resource in resources:
         try:
@@ -20,10 +57,42 @@ def download_nltk_resources():
 download_nltk_resources()
 
 class EmpatheticResponseGenerator:
+    """
+    Generador de Respuestas Empáticas
+    
+    Esta clase es el núcleo del sistema de generación de respuestas empáticas.
+    Analiza texto emocional, identifica contextos, mide intensidad emocional
+    y genera respuestas apropiadas y empáticas.
+    
+    Atributos:
+        lemmatizer: Lematizador de WordNet para normalización de palabras
+        stop_words: Conjunto de palabras comunes en inglés para filtrar
+        intensity_words: Diccionario de palabras categorizadas por intensidad
+        emotion_mapping: Mapeo de emociones específicas a categorías generales
+        empathetic_patterns: Patrones de respuesta para cada emoción
+        follow_up_phrases: Frases de seguimiento según intensidad emocional
+        context_keywords: Palabras clave para identificación de contexto
+    
+    Métodos principales:
+        - identify_context(): Identifica el contexto temático del texto
+        - generate_context_summary(): Genera resumen contextual
+        - calculate_emotional_intensity(): Calcula la intensidad emocional
+        - convert_to_second_person(): Convierte texto de primera a segunda persona
+        - generate_empathetic_response(): Genera la respuesta empática final
+    """
+    
     def __init__(self):
+        """
+        Inicializa el generador de respuestas empáticas con todas las configuraciones
+        y diccionarios necesarios para el análisis y generación de respuestas.
+        """
+        # Herramientas de procesamiento de lenguaje natural
         self.lemmatizer = WordNetLemmatizer()
         self.stop_words = set(stopwords.words('english'))
 
+
+        # Diccionario de palabras de intensidad emocional
+        # Clasifica palabras según su nivel de intensidad para medir el estado emocional
         self.intensity_words = {
             'high': ['extremely', 'absolutely', 'completely', 'totally', 'really', 'very', 'so', 
                      'incredibly', 'devastated', 'furious', 'ecstatic', 'terrified', 'overwhelmed'],
@@ -31,6 +100,8 @@ class EmpatheticResponseGenerator:
             'low': ['a bit', 'slightly', 'kind of', 'sort of', 'a little']
         }
 
+        # Mapeo de emociones específicas a categorías generales
+        # Facilita el manejo de emociones variadas agrupándolas en categorías principales
         self.emotion_mapping = {
             'admiration': 'positive', 'amusement': 'positive', 'approval': 'positive',
             'caring': 'positive', 'curiosity': 'positive', 'desire': 'positive',
@@ -46,6 +117,8 @@ class EmpatheticResponseGenerator:
             'confusion': 'neutral', 'surprise': 'neutral', 'neutral': 'neutral'
         }
 
+        # Patrones de respuesta empática para cada emoción
+        # Cada emoción tiene múltiples patrones para variety y naturalidad en las respuestas
         self.empathetic_patterns = {
             'anger': [
                 "I can sense the frustration in your words. It's completely understandable to feel angry when dealing with {context}.",
@@ -112,6 +185,8 @@ class EmpatheticResponseGenerator:
             ]
         }
 
+        # Frases de seguimiento basadas en intensidad emocional
+        # Proporcionan continuidad apropiada según el nivel de emoción detectado
         self.follow_up_phrases = {
             'high_intensity': [
                 "Would you like to talk more about this?",
@@ -136,6 +211,8 @@ class EmpatheticResponseGenerator:
             ]
         }
 
+        # Palabras clave para identificación de contexto temático
+        # Agrupa palabras relacionadas por categorías para mejor clasificación contextual
         self.context_keywords = {
             'work': ['job', 'work', 'boss', 'colleague', 'office', 'meeting', 'project', 'deadline', 
                      'career', 'workplace', 'coworker', 'manager', 'employee', 'salary', 'promotion'],
@@ -152,6 +229,25 @@ class EmpatheticResponseGenerator:
         }
 
     def identify_context(self, text: str) -> str:
+        """
+        Identifica el contexto temático principal del texto analizado.
+        
+        Analiza el texto buscando palabras clave específicas para determinar
+        el contexto principal (trabajo, relaciones, salud, escuela, etc.).
+        
+        Args:
+            text (str): Texto a analizar para identificación de contexto
+            
+        Returns:
+            str: Categoría de contexto identificada ('work', 'relationship', 'health', etc.)
+                 o 'general' si no se identifica un contexto específico
+                 
+        Proceso:
+            1. Convierte el texto a minúsculas para análisis
+            2. Busca palabras clave de cada categoría
+            3. Asigna puntuaciones según coincidencias
+            4. Retorna la categoría con mayor puntuación
+        """
         text_lower = text.lower()
         context_scores = {}
         for context, keywords in self.context_keywords.items():
@@ -162,6 +258,24 @@ class EmpatheticResponseGenerator:
         return max(context_scores, key=context_scores.get) if context_scores else 'general'
 
     def generate_context_summary(self, text: str) -> str:
+        """
+        Genera un resumen contextual del texto para usar en respuestas empáticas.
+        
+        Crea un resumen contextualizado que puede ser insertado en los patrones
+        de respuesta empática, convirtiendo el texto de primera a segunda persona.
+        
+        Args:
+            text (str): Texto original del usuario
+            
+        Returns:
+            str: Resumen contextual en segunda persona para usar en respuestas
+            
+        Proceso:
+            1. Identifica el tipo de contexto
+            2. Extrae la oración más informativa
+            3. Convierte de primera a segunda persona
+            4. Retorna un resumen apropiado para respuestas empáticas
+        """
         context_type = self.identify_context(text)
         context_phrases = {
             'work': ['your job situation', 'work challenges', 'workplace issues'],
@@ -183,6 +297,26 @@ class EmpatheticResponseGenerator:
         return random.choice(context_phrases.get(context_type, ["what you're going through"]))
 
     def calculate_emotional_intensity(self, text: str) -> str:
+        """
+        Calcula la intensidad emocional del texto basándose en múltiples indicadores.
+        
+        Analiza varios aspectos del texto para determinar el nivel de intensidad
+        emocional y seleccionar respuestas apropiadas.
+        
+        Args:
+            text (str): Texto a analizar para intensidad emocional
+            
+        Returns:
+            str: Nivel de intensidad ('high_intensity', 'medium_intensity', 'low_intensity')
+            
+        Indicadores analizados:
+            - Signos de exclamación (peso: 2)
+            - Signos de interrogación (peso: 1)
+            - Palabras en mayúsculas (peso: 1)
+            - Palabras de alta intensidad (peso: 3)
+            - Palabras de intensidad media (peso: 1)
+            - Letras repetidas (peso: 2)
+        """
         text_lower = text.lower()
         exclamation_count = text.count('!')
         question_count = text.count('?')
@@ -194,7 +328,30 @@ class EmpatheticResponseGenerator:
         return 'high_intensity' if total > 4 else 'medium_intensity' if total > 1 else 'low_intensity'
     
     def convert_to_second_person(self, text: str) -> str:
-        """Convierte texto de primera persona a segunda persona"""
+        """
+        Convierte texto de primera persona a segunda persona para respuestas empáticas.
+        
+        Transforma pronombres y formas verbales de primera persona a segunda persona
+        para crear respuestas más directas y empáticas.
+        
+        Args:
+            text (str): Texto en primera persona
+            
+        Returns:
+            str: Texto convertido a segunda persona
+            
+        Conversiones realizadas:
+            - "I am" → "you are"
+            - "I feel" → "you feel"
+            - "my" → "your"
+            - "me" → "you"
+            - Y muchas otras formas verbales y pronominales
+            
+        Características:
+            - Preserva la capitalización original
+            - Usa expresiones regulares para coincidencias exactas
+            - Maneja contracciones y formas verbales complejas
+        """
         # Diccionario de conversiones
         conversions = {
             r'\bI am\b': 'you are',
@@ -247,6 +404,34 @@ class EmpatheticResponseGenerator:
         return result
     
     def generate_empathetic_response(self, text: str, emotion: str) -> str:
+        """
+        Genera una respuesta empática completa basada en el texto y emoción detectados.
+        
+        Método principal que coordina todo el proceso de análisis y generación
+        de respuestas empáticas personalizadas.
+        
+        Args:
+            text (str): Texto original del usuario
+            emotion (str): Emoción detectada en el texto
+            
+        Returns:
+            str: Respuesta empática completa con contexto y seguimiento
+            
+        Proceso de generación:
+            1. Normaliza la emoción recibida
+            2. Mapea emociones desconocidas a categorías principales
+            3. Genera contexto personalizado del texto
+            4. Selecciona patrón de respuesta apropiado
+            5. Calcula intensidad emocional
+            6. Añade frase de seguimiento apropiada
+            7. Combina todo en una respuesta coherente
+            
+        Características:
+            - Respuestas contextualizadas y personalizadas
+            - Manejo robusto de emociones no reconocidas
+            - Intensidad emocional adaptativa
+            - Frases de seguimiento apropiadas
+        """
         emotion = emotion.lower()
         if emotion not in self.empathetic_patterns:
             emotion_category = self.emotion_mapping.get(emotion, 'neutral')
@@ -268,8 +453,27 @@ class EmpatheticResponseGenerator:
         follow_up = random.choice(self.follow_up_phrases[self.calculate_emotional_intensity(text)])
         return f"{main_response} {follow_up}"
 
-# Ejecución de prueba
+# ==================== SECCIÓN DE PRUEBAS ====================
+# Ejecución de casos de prueba para validar el funcionamiento del generador
+
 if __name__ == "__main__":
+    """
+    Sección de pruebas para validar el funcionamiento del generador de respuestas empáticas.
+    
+    Incluye casos de prueba para diferentes emociones y contextos:
+    - Anger (ira): Frustración laboral
+    - Sadness (tristeza): Pérdida personal
+    - Fear (miedo): Ansiedad por presentación
+    - Joy (alegría): Promoción laboral
+    - Surprise (sorpresa): Noticia inesperada
+    - Embarrassment (vergüenza): Situación incómoda
+    - Disappointment (decepción): Planes cancelados
+    
+    Cada caso muestra:
+    - Texto original del usuario
+    - Emoción detectada
+    - Respuesta empática generada
+    """
     generator = EmpatheticResponseGenerator()
     test_cases = [
         ("I'm so frustrated with my job. My boss keeps giving me impossible deadlines and I can't keep up.", "anger"),
