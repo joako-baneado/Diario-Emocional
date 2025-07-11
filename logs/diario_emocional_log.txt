@@ -1,0 +1,4 @@
+[01:17] Tú: hi there
+[01:17] Bot: I appreciate you taking the time to express how you feel about what you're going through. Thanks for sharing this with me. / neutral
+[01:17] Tú: im feeling sad today
+[01:17] Bot: Your sadness comes through in your words. im feeling sad today must be weighing heavily on you. Thanks for sharing this with me. / sadness

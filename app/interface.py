@@ -1,143 +1,132 @@
-# Menú simple por consola o flujo automatizado
 import tkinter as tk
 import customtkinter as ctk
-import speech_recognition as sr
+from PIL import Image, ImageTk
+import cv2
 import threading
 import time
-from PIL import Image, ImageTk
+import speech_recognition as sr
+from empathy import EmpatheticResponseGenerator
+from transformers import pipeline
+import datetime
 
+# Configuraciones iniciales
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("blue")
+
+# Clasificador de emociones con modelo de HuggingFace
+emotion_classifier = pipeline("text-classification", model="j-hartmann/emotion-english-distilroberta-base", return_all_scores=False)
+
+# Clase principal
 class EmotionalDiaryApp:
     def __init__(self):
         self.window = ctk.CTk()
         self.window.title("Diario Emocional")
-        self.window.geometry("800x600")
-        
-        # Configurar tema oscuro
-        ctk.set_appearance_mode("dark")
-        ctk.set_default_color_theme("blue")
-        
-        # Variables de estado
-        self.is_recording = False
+        self.window.geometry("1000x800")
+
         self.recognizer = sr.Recognizer()
-        
-        self.setup_ui()
-        
-    def setup_ui(self):
-        # Frame principal
-        main_frame = ctk.CTkFrame(self.window)
-        main_frame.pack(padx=20, pady=20, fill="both", expand=True)
-        
-        # Título
-        title_label = ctk.CTkLabel(
-            main_frame, 
-            text="Diario Emocional",
-            font=ctk.CTkFont(size=24, weight="bold")
-        )
-        title_label.pack(pady=20)
-        
-        # Botón de grabación
-        self.record_button = ctk.CTkButton(
-            main_frame,
-            text="Iniciar Grabación",
-            command=self.toggle_recording,
-            width=200,
-            height=40
-        )
-        self.record_button.pack(pady=20)
-        
-        # Frame para los textos
-        text_frame = ctk.CTkFrame(main_frame)
-        text_frame.pack(padx=10, pady=10, fill="both", expand=True)
-        
-        # Área de texto transcrito
-        transcription_label = ctk.CTkLabel(
-            text_frame,
-            text="Tu mensaje:",
-            font=ctk.CTkFont(size=16)
-        )
-        transcription_label.pack(anchor="w", padx=10, pady=5)
-        
-        self.transcription_text = ctk.CTkTextbox(
-            text_frame,
-            width=700,
-            height=100
-        )
-        self.transcription_text.pack(padx=10, pady=5)
-        
-        # Área de respuesta empática
-        response_label = ctk.CTkLabel(
-            text_frame,
-            text="Respuesta empática:",
-            font=ctk.CTkFont(size=16)
-        )
-        response_label.pack(anchor="w", padx=10, pady=5)
-        
-        self.response_text = ctk.CTkTextbox(
-            text_frame,
-            width=700,
-            height=150
-        )
-        self.response_text.pack(padx=10, pady=5)
-        
+        self.is_recording = False
+        self.empathetic_generator = EmpatheticResponseGenerator()
+
+        self.camera_on = True
+        self.cap = cv2.VideoCapture(0)
+
+        self.build_ui()
+        self.update_camera()
+
+    def build_ui(self):
+        self.main_frame = ctk.CTkFrame(self.window)
+        self.main_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
+        self.camera_label = ctk.CTkLabel(self.main_frame, text="Cámara")
+        self.camera_label.pack(pady=5)
+
+        # Botones de control
+        button_frame = ctk.CTkFrame(self.main_frame)
+        button_frame.pack(pady=10)
+
+        self.record_button = ctk.CTkButton(button_frame, text="🎙️ Grabar voz", command=self.toggle_recording)
+        self.record_button.grid(row=0, column=0, padx=10)
+
+        self.send_button = ctk.CTkButton(button_frame, text="✉️ Enviar texto", command=self.process_text_input)
+        self.send_button.grid(row=0, column=1, padx=10)
+
+        # Chat log
+        self.chat_display = ctk.CTkTextbox(self.main_frame, height=300, wrap="word")
+        self.chat_display.pack(padx=10, pady=10, fill="both", expand=False)
+        self.chat_display.insert("1.0", "[Diario iniciado]\n")
+        self.chat_display.configure(state="disabled")
+
+        # Entrada de texto
+        self.input_box = ctk.CTkEntry(self.main_frame, placeholder_text="Escribe tu mensaje aquí...", width=800)
+        self.input_box.pack(padx=10, pady=(0,10))
+
     def toggle_recording(self):
         if not self.is_recording:
-            self.start_recording()
+            self.is_recording = True
+            self.record_button.configure(text="⏹️ Detener")
+            threading.Thread(target=self.record_audio).start()
         else:
-            self.stop_recording()
-            
-    def start_recording(self):
-        self.is_recording = True
-        self.record_button.configure(text="Detener Grabación", fg_color="red")
-        self.recording_thread = threading.Thread(target=self.record_audio)
-        self.recording_thread.start()
-        
-    def stop_recording(self):
-        self.is_recording = False
-        self.record_button.configure(text="Iniciar Grabación", fg_color=["#3B8ED0", "#1F6AA5"])
-        
+            self.is_recording = False
+            self.record_button.configure(text="🎙️ Grabar voz")
+
     def record_audio(self):
         with sr.Microphone() as source:
             while self.is_recording:
                 try:
                     audio = self.recognizer.listen(source, timeout=1)
                     text = self.recognizer.recognize_google(audio, language="es-ES")
-                    self.update_transcription(text)
-                    self.generate_empathetic_response(text)
-                except sr.WaitTimeoutError:
+                    self.append_chat("Tú", text)
+                    self.generate_response(text)
+                except:
                     continue
-                except sr.UnknownValueError:
-                    continue
-                except sr.RequestError:
-                    self.show_error("Error de conexión con el servicio de reconocimiento de voz")
-                    break
-                    
-    def update_transcription(self, text):
-        self.transcription_text.delete("1.0", tk.END)
-        self.transcription_text.insert("1.0", text)
-        
-    def generate_empathetic_response(self, text):
-        # Aquí puedes integrar tu lógica de generación de respuestas empáticas
-        # Por ahora, usaremos respuestas simples basadas en palabras clave
-        response = self.get_simple_empathetic_response(text)
-        self.response_text.delete("1.0", tk.END)
-        self.response_text.insert("1.0", response)
-        
-    def get_simple_empathetic_response(self, text):
-        text = text.lower()
-        if any(word in text for word in ["triste", "mal", "dolor"]):
-            return "Entiendo que estés pasando por un momento difícil. Es normal sentirse así, y está bien expresar tus emociones. ¿Quieres hablar más sobre lo que te preocupa?"
-        elif any(word in text for word in ["feliz", "alegre", "contento"]):
-            return "¡Me alegro mucho de que te sientas así! Es maravilloso experimentar esos momentos de felicidad. ¿Qué te ha hecho sentir tan bien?"
-        elif any(word in text for word in ["preocupado", "ansioso", "miedo"]):
-            return "Es comprensible sentir preocupación. Respira profundo y recuerda que estoy aquí para escucharte. ¿Quieres compartir qué te está causando esta ansiedad?"
+
+    def process_text_input(self):
+        text = self.input_box.get()
+        if text:
+            self.input_box.delete(0, tk.END)
+            self.append_chat("Tú", text)
+            self.generate_response(text)
+
+    def generate_response(self, text):
+        try:
+            emotion = emotion_classifier(text)[0]['label']
+            response = self.empathetic_generator.generate_empathetic_response(text, emotion)
+            self.append_chat("Bot", response, emotion)
+        except Exception as e:
+            self.append_chat("Bot", f"Error generando respuesta empática: {e}")
+
+    def append_chat(self, speaker, message, emotion = "Input"):
+        timestamp = datetime.datetime.now().strftime("[%H:%M]")
+        self.chat_display.configure(state="normal")
+        self.chat_display.insert(tk.END, f"{timestamp} {speaker}: {message}\n")
+        self.chat_display.configure(state="disabled")
+        self.chat_display.see(tk.END)
+        if (emotion != "Input"):
+            # Guardar en el log
+            self.save_log(f"{timestamp} {speaker}: {message} / {emotion}\n")
         else:
-            return "Te escucho y estoy aquí para apoyarte. ¿Quieres contarme más sobre cómo te sientes?"
-            
-    def show_error(self, message):
-        tk.messagebox.showerror("Error", message)
-        
+            self.save_log(f"{timestamp} {speaker}: {message}\n")
+
+    def save_log(self, entry):
+        with open("./logs/diario_emocional_log.txt", "a", encoding="utf-8") as f:
+            f.write(entry)
+
+    def update_camera(self):
+        if self.camera_on:
+            ret, frame = self.cap.read()
+            if ret:
+                frame = cv2.resize(frame, (640, 360))
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                img = Image.fromarray(frame)
+                imgtk = ImageTk.PhotoImage(image=img)
+                self.camera_label.configure(image=imgtk, text="")
+                self.camera_label.imgtk = imgtk
+        self.window.after(30, self.update_camera)
+
     def run(self):
         self.window.mainloop()
+        self.cap.release()
+        cv2.destroyAllWindows()
 
 if __name__ == "__main__":
     app = EmotionalDiaryApp()

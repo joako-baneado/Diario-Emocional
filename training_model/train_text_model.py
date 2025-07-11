@@ -9,7 +9,7 @@ if __name__ == '__main__':
     import os
 
     # Entrenamiento con optimización incluida
-    df = pd.read_csv("app/dataset1.csv")
+    df = pd.read_csv("./datasets/dataset.csv")
     label_encoder = LabelEncoder()
     df['label'] = label_encoder.fit_transform(df['emotion'])
 
