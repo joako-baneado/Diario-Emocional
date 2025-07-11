@@ -1,13 +1,56 @@
-SpeechRecognition==3.10.0
-nltk==3.8.1
-numpy==1.24.3
-librosa==0.10.1
-scikit-learn==1.3.0
+# Diario Emocional - Dependencias Optimizadas
+# ============================================
+# Este archivo lista todas las dependencias organizadas por categoría.
+# Para instalación optimizada, usa: python optimized_setup.py
+
+# ===== DEPENDENCIAS CORE (SIEMPRE NECESARIAS) =====
+# Estas se cargan siempre para el funcionamiento básico
 customtkinter==5.2.0
 tk==0.1.0
+python-dotenv==1.0.0
+
+# ===== INTELIGENCIA ARTIFICIAL Y ML =====
+# Se cargan solo cuando se usa análisis de emociones
 transformers==4.34.1
 torch==2.1.0
+nltk==3.8.1
+scikit-learn==1.3.0
+
+# ===== AUDIO Y VIDEO =====
+# Se cargan solo cuando se usa grabación o cámara
+SpeechRecognition==3.10.0
+librosa==0.10.1
+opencv-python==4.8.1.78
+Pillow==10.0.1
+
+# ===== DATOS Y VISUALIZACIÓN =====
+# Se cargan solo cuando se generan estadísticas
 pandas==2.1.1
+matplotlib==3.7.2
+numpy==1.24.3
+
+# ===== UTILIDADES ADICIONALES =====
+# Soporte para datasets y procesamiento
 datasets==2.14.5
 joblib==1.3.2
-python-dotenv==1.0.0
+
+# ===== HERRAMIENTAS DE DESARROLLO (OPCIONALES) =====
+# Para testing y análisis de rendimiento
+psutil==5.9.5
+memory-profiler==0.61.0
+
+# ===== NOTAS DE INSTALACIÓN =====
+# 
+# Instalación rápida (solo core):
+#   pip install customtkinter tk python-dotenv
+#
+# Instalación por categorías:
+#   # IA: pip install transformers torch nltk scikit-learn
+#   # Audio/Video: pip install SpeechRecognition librosa opencv-python Pillow
+#   # Visualización: pip install pandas matplotlib numpy
+#
+# Instalación completa:
+#   pip install -r requirements.txt
+#
+# Configuración automática optimizada:
+#   python optimized_setup.py

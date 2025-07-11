@@ -28,14 +28,16 @@ Funcionalidades principales:
 
 import tkinter as tk
 import customtkinter as ctk
-from PIL import Image, ImageTk
-import cv2
 import threading
 import time
-import speech_recognition as sr
-from empathy import EmpatheticResponseGenerator
-from transformers import pipeline
 import datetime
+
+# Importaciones lazy - se cargarán solo cuando se necesiten
+# from PIL import Image, ImageTk
+# import cv2
+# import speech_recognition as sr
+# from empathy import EmpatheticResponseGenerator
+# from transformers import pipeline
 
 # ==================== CONFIGURACIONES INICIALES ====================
 
@@ -44,13 +46,70 @@ import datetime
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 
-# Inicializar clasificador de emociones usando modelo preentrenado
-# Utiliza DistilRoBERTa optimizado para clasificación de emociones en inglés
-emotion_classifier = pipeline(
-    "text-classification", 
-    model="j-hartmann/emotion-english-distilroberta-base", 
-    return_all_scores=False
-)
+# Variables globales para lazy loading
+emotion_classifier = None
+cv2 = None
+sr = None
+Image = None
+ImageTk = None
+EmpatheticResponseGenerator = None
+
+def load_ai_models():
+    """
+    Carga los modelos de IA de forma lazy cuando se necesiten.
+    """
+    global emotion_classifier
+    if emotion_classifier is None:
+        from transformers import pipeline
+        # Inicializar clasificador de emociones usando modelo preentrenado
+        # Utiliza DistilRoBERTa optimizado para clasificación de emociones en inglés
+        emotion_classifier = pipeline(
+            "text-classification", 
+            model="j-hartmann/emotion-english-distilroberta-base", 
+            return_all_scores=False
+        )
+    return emotion_classifier
+
+def load_cv2():
+    """
+    Carga OpenCV de forma lazy cuando se necesite.
+    """
+    global cv2
+    if cv2 is None:
+        import cv2 as cv2_module
+        cv2 = cv2_module
+    return cv2
+
+def load_speech_recognition():
+    """
+    Carga SpeechRecognition de forma lazy cuando se necesite.
+    """
+    global sr
+    if sr is None:
+        import speech_recognition as sr_module
+        sr = sr_module
+    return sr
+
+def load_pil():
+    """
+    Carga PIL de forma lazy cuando se necesite.
+    """
+    global Image, ImageTk
+    if Image is None:
+        from PIL import Image as Image_module, ImageTk as ImageTk_module
+        Image = Image_module
+        ImageTk = ImageTk_module
+    return Image, ImageTk
+
+def load_empathy():
+    """
+    Carga el generador empático de forma lazy cuando se necesite.
+    """
+    global EmpatheticResponseGenerator
+    if EmpatheticResponseGenerator is None:
+        from empathy import EmpatheticResponseGenerator as EmpGen
+        EmpatheticResponseGenerator = EmpGen
+    return EmpatheticResponseGenerator
 
 # ==================== CLASE PRINCIPAL ====================
 
@@ -79,7 +138,7 @@ class EmotionalDiaryApp:
         - input_box: Campo de entrada de texto
     """
     
-    def __init__(self):
+    def __init__(self, return_to_menu=None):
         """
         Inicializa la aplicación del diario emocional.
         
@@ -90,26 +149,64 @@ class EmotionalDiaryApp:
         - Captura de cámara
         - Interfaz de usuario
         - Bucle de actualización de cámara
+        
+        Args:
+            return_to_menu: Función callback para regresar al menú principal
         """
+        # Guardar callback para navegación
+        self.return_to_menu = return_to_menu
+        
         # Configurar ventana principal
         self.window = ctk.CTk()
         self.window.title("Diario Emocional")
         self.window.geometry("1000x800")
+        
+        # Configurar protocolo de cierre
+        if self.return_to_menu:
+            self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
 
-        # Inicializar componentes de reconocimiento de voz
-        self.recognizer = sr.Recognizer()
+        # Inicializar componentes de reconocimiento de voz (lazy loading)
+        self.recognizer = None
         self.is_recording = False
         
-        # Inicializar generador de respuestas empáticas
-        self.empathetic_generator = EmpatheticResponseGenerator()
+        # Inicializar generador de respuestas empáticas (lazy loading)
+        self.empathetic_generator = None
 
-        # Configurar captura de cámara
+        # Configurar captura de cámara (lazy loading)
         self.camera_on = True
-        self.cap = cv2.VideoCapture(0)
+        self.cap = None
 
-        # Construir interfaz de usuario y iniciar actualización de cámara
+        # Construir interfaz de usuario
         self.build_ui()
-        self.update_camera()
+        
+        # Iniciar actualización de cámara solo si se activa
+        if self.camera_on:
+            self.init_camera()
+            self.update_camera()
+
+    def init_camera(self):
+        """
+        Inicializa la cámara de forma lazy cuando se necesite.
+        """
+        if self.cap is None:
+            cv2_module = load_cv2()
+            self.cap = cv2_module.VideoCapture(0)
+    
+    def init_speech_recognition(self):
+        """
+        Inicializa el reconocimiento de voz de forma lazy cuando se necesite.
+        """
+        if self.recognizer is None:
+            sr_module = load_speech_recognition()
+            self.recognizer = sr_module.Recognizer()
+    
+    def init_empathy_generator(self):
+        """
+        Inicializa el generador empático de forma lazy cuando se necesite.
+        """
+        if self.empathetic_generator is None:
+            EmpGen = load_empathy()
+            self.empathetic_generator = EmpGen()
 
     def build_ui(self):
         """
@@ -131,6 +228,19 @@ class EmotionalDiaryApp:
         # Crear marco principal que contiene todos los elementos
         self.main_frame = ctk.CTkFrame(self.window)
         self.main_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
+        # Marco superior para navegación
+        if self.return_to_menu:
+            nav_frame = ctk.CTkFrame(self.main_frame)
+            nav_frame.pack(fill="x", pady=(0, 10))
+            
+            menu_btn = ctk.CTkButton(nav_frame, text="🏠 Menú Principal", 
+                                   command=self.go_to_menu, width=120)
+            menu_btn.pack(side="left", padx=5)
+            
+            viewer_btn = ctk.CTkButton(nav_frame, text="📚 Ver Historial", 
+                                     command=self.go_to_viewer, width=120)
+            viewer_btn.pack(side="left", padx=5)
 
         # Visualización de cámara en tiempo real
         self.camera_label = ctk.CTkLabel(self.main_frame, text="Cámara")
@@ -173,6 +283,8 @@ class EmotionalDiaryApp:
         la interfaz de usuario durante el proceso de escucha.
         """
         if not self.is_recording:
+            # Inicializar reconocimiento de voz si no está cargado
+            self.init_speech_recognition()
             # Iniciar grabación
             self.is_recording = True
             self.record_button.configure(text="⏹️ Detener")
@@ -203,7 +315,8 @@ class EmotionalDiaryApp:
         - Idioma: Español de España (es-ES)
         - Timeout: 1 segundo para evitar bloqueos largos
         """
-        with sr.Microphone() as source:
+        sr_module = load_speech_recognition()
+        with sr_module.Microphone() as source:
             while self.is_recording:
                 try:
                     # Escuchar audio con timeout corto para responsividad
@@ -261,8 +374,12 @@ class EmotionalDiaryApp:
         - Emoción detectada (para logging y análisis)
         """
         try:
+            # Cargar modelos de IA si no están cargados
+            classifier = load_ai_models()
+            self.init_empathy_generator()
+            
             # Clasificar emoción usando modelo DistilRoBERTa
-            emotion = emotion_classifier(text)[0]['label']
+            emotion = classifier(text)[0]['label']
             # Generar respuesta empática personalizada
             response = self.empathetic_generator.generate_empathetic_response(text, emotion)
             # Mostrar respuesta del bot con emoción detectada
@@ -357,18 +474,22 @@ class EmotionalDiaryApp:
         - Si no hay frame disponible, mantiene imagen anterior
         - Continúa el bucle de actualización independientemente
         """
-        if self.camera_on:
+        if self.camera_on and self.cap is not None:
+            # Cargar módulos necesarios
+            cv2_module = load_cv2()
+            Image_module, ImageTk_module = load_pil()
+            
             # Capturar frame de la cámara
             ret, frame = self.cap.read()
             if ret:
                 # Redimensionar frame para interfaz (640x360)
-                frame = cv2.resize(frame, (640, 360))
+                frame = cv2_module.resize(frame, (640, 360))
                 # Convertir de BGR (OpenCV) a RGB (PIL/Tkinter)
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                frame = cv2_module.cvtColor(frame, cv2_module.COLOR_BGR2RGB)
                 # Convertir a formato PIL
-                img = Image.fromarray(frame)
+                img = Image_module.fromarray(frame)
                 # Convertir a formato Tkinter
-                imgtk = ImageTk.PhotoImage(image=img)
+                imgtk = ImageTk_module.PhotoImage(image=img)
                 # Actualizar label de cámara
                 self.camera_label.configure(image=imgtk, text="")
                 # Mantener referencia para evitar garbage collection
@@ -396,8 +517,48 @@ class EmotionalDiaryApp:
         # Iniciar bucle principal de la aplicación
         self.window.mainloop()
         # Limpiar recursos al cerrar la aplicación
-        self.cap.release()
-        cv2.destroyAllWindows()
+        if self.cap is not None:
+            self.cap.release()
+        if cv2 is not None:
+            cv2.destroyAllWindows()
+    
+    def on_closing(self):
+        """
+        Maneja el cierre de la ventana.
+        """
+        if self.cap is not None:
+            self.cap.release()
+        if cv2 is not None:
+            cv2.destroyAllWindows()
+        self.window.destroy()
+        if self.return_to_menu:
+            self.return_to_menu()
+    
+    def go_to_menu(self):
+        """
+        Navega al menú principal.
+        """
+        if self.cap is not None:
+            self.cap.release()
+        if cv2 is not None:
+            cv2.destroyAllWindows()
+        self.window.destroy()
+        if self.return_to_menu:
+            self.return_to_menu()
+    
+    def go_to_viewer(self):
+        """
+        Navega al visor del historial.
+        """
+        if self.cap is not None:
+            self.cap.release()
+        if cv2 is not None:
+            cv2.destroyAllWindows()
+        self.window.destroy()
+        if self.return_to_menu:
+            from diary_viewer import DiaryViewerApp
+            viewer = DiaryViewerApp(return_to_menu=self.return_to_menu)
+            viewer.run()
 
 # ==================== PUNTO DE ENTRADA PRINCIPAL ====================
 

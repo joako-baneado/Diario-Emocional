@@ -10,3 +10,9 @@
 [02:10] Bot: Your perspective on what you're going through is valuable. How can I best support you? Thanks for sharing this with me. / neutral
 [02:10] Tú: im quite good today, i got pass my work interview
 [02:10] Bot: I'm so glad you're experiencing this positivity with im quite good today, you got pass your work interview. What else is on your mind? / joy
+[02:32] Tú: hi there
+[02:32] Bot: What you're sharing about what you're going through gives me insight into what you're experiencing. I'm glad you felt comfortable expressing this. If you don't mind me asking, what else has been on your mind? / neutral
+[02:32] Tú: im sad
+[02:32] Bot: The grief you're experiencing with what you're going through comes through so clearly. I'm sorry you're going through something this difficult. I'm curious, thanks for sharing this with me. / sadness
+[02:32] Tú: today i went out and bought a pizza
+[02:32] Bot: I can practically feel you glowing when you describe what you're going through. That level of happiness is absolutely magical. I wonder, i'm here if you need to talk more about it. / joy
