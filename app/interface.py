@@ -59,6 +59,7 @@ class EmotionalDiaryApp:
         # Entrada de texto
         self.input_box = ctk.CTkEntry(self.main_frame, placeholder_text="Escribe tu mensaje aquí...", width=800)
         self.input_box.pack(padx=10, pady=(0,10))
+        self.input_box.bind("<Return>", lambda event: self.process_text_input())
 
     def toggle_recording(self):
         if not self.is_recording:
